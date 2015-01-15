@@ -1,11 +1,17 @@
 package com.miniand.brdgme;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -31,7 +37,7 @@ public class WebSocketService extends IntentService
 
     @Override
     protected synchronized void onHandleIntent(Intent intent) {
-        AsyncHttpClient.getDefaultInstance().websocket("ws://brdg.me/ws", "ws", this);
+        AsyncHttpClient.getDefaultInstance().websocket("ws://api.beta.brdg.me/ws", "ws", this);
         try {
             latch.await();
         } catch (InterruptedException ignored) {}
@@ -60,5 +66,20 @@ public class WebSocketService extends IntentService
 
     @Override
     public void onStringAvailable(String s) {
+        try {
+            JSONObject msg = new JSONObject(s);
+            JSONObject data = msg.getJSONObject("data");
+            switch (msg.getString("type")) {
+                case "gameUpdate":
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                            .setSmallIcon(android.R.drawable.stat_notify_chat)
+                            .setContentTitle(data.getString("gameName"))
+                            .setContentText(data.getString("gameId"));
+                    NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    mgr.notify(data.getString("gameId"), 0, mBuilder.build());
+            }
+        } catch (JSONException e) {
+            Log.w("WebSocket", "Non-JSON message: " + s);
+        }
     }
 }
