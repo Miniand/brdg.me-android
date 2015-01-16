@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Brdg.me</string>
+    <string name="app_name">brdg.me</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_auth">brdg.me</string>
+    <string name="email_address">Email address</string>
+    <string name="confirmation_code">Confirmation code</string>
+    <string name="log_in">Log in</string>
+    <string name="start_playing">Start playing</string>
+    <string name="auth_explanation">Log in only using your email, no account or password required.</string>
+    <string name="auth_confirmation_message">A code has been emailed to you, please enter the code below</string>
 
 </resources>
