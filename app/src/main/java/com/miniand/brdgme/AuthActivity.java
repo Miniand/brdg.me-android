@@ -1,5 +1,6 @@
 package com.miniand.brdgme;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class AuthActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!getPreferences(MODE_PRIVATE).getString("token", "").equals("")) {
+        if (!Brdgme.getAuthToken().isEmpty()) {
             goHome();
             return;
         }
@@ -41,10 +43,7 @@ public class AuthActivity extends ActionBarActivity {
         fragment.setAuthFinishedHandler(new AuthFragment.AuthFinishedHandler() {
             @Override
             public void handleAuthFinished(String email, String token) {
-                getPreferences(MODE_PRIVATE).edit()
-                        .putString("email", email)
-                        .putString("token", token)
-                        .apply();
+                Brdgme.storeAuth(email, token);
                 goHome();
             }
         });
@@ -81,6 +80,7 @@ public class AuthActivity extends ActionBarActivity {
 
     private void goHome() {
         Intent intent = new Intent(this, HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
@@ -176,6 +176,7 @@ public class AuthActivity extends ActionBarActivity {
             switch (state) {
                 case ENTER_EMAIL:
                     rootView.findViewById(R.id.auth_explanation).setEnabled(true);
+                    rootView.findViewById(R.id.auth_email).setEnabled(true);
                     rootView.findViewById(R.id.log_in_button).setEnabled(true);
                     rootView.findViewById(R.id.progress_bar).setVisibility(View.GONE);
                     rootView.findViewById(R.id.auth_confirmation_message).setVisibility(View.GONE);
@@ -183,6 +184,7 @@ public class AuthActivity extends ActionBarActivity {
                     break;
                 case ENTER_CONFIRMATION:
                     rootView.findViewById(R.id.auth_explanation).setEnabled(false);
+                    rootView.findViewById(R.id.auth_email).setEnabled(true);
                     rootView.findViewById(R.id.log_in_button).setEnabled(true);
                     rootView.findViewById(R.id.progress_bar).setVisibility(View.GONE);
                     rootView.findViewById(R.id.auth_confirmation_message).setVisibility(View.VISIBLE);
@@ -190,6 +192,7 @@ public class AuthActivity extends ActionBarActivity {
                     break;
                 case PROGRESS:
                     rootView.findViewById(R.id.auth_explanation).setEnabled(false);
+                    rootView.findViewById(R.id.auth_email).setEnabled(false);
                     rootView.findViewById(R.id.log_in_button).setEnabled(false);
                     rootView.findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
                     rootView.findViewById(R.id.auth_confirmation_message).setVisibility(View.GONE);
@@ -206,6 +209,7 @@ public class AuthActivity extends ActionBarActivity {
                         @Override
                         public void onResponse(String response) {
                             goToState(State.ENTER_CONFIRMATION);
+                            focusEditText(R.id.auth_confirmation);
                         }
                     },
                     new Response.ErrorListener() {
@@ -217,6 +221,7 @@ public class AuthActivity extends ActionBarActivity {
                                     "Unable to log in at the moment, please try again later.",
                                     Toast.LENGTH_LONG
                             ).show();
+                            focusEditText(R.id.auth_confirmation);
                         }
                     }
             ) {
@@ -229,6 +234,18 @@ public class AuthActivity extends ActionBarActivity {
             };
             Brdgme.getRequestQueue().add(request);
             goToState(State.PROGRESS);
+        }
+
+        private void focusEditText(int id) {
+            View view = getView();
+            if (view == null) {
+                return;
+            }
+            if (view.findViewById(id).requestFocus()) {
+                InputMethodManager imm = (InputMethodManager)
+                        getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            }
         }
 
         private void confirmAuth(final String email, final String confirmation) {

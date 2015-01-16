@@ -1,72 +1,77 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
-    android:padding="50dp"
+    android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:context="com.miniand.brdgme.AuthActivity.AuthFragment"
     >
-
-    <TextView
-        android:id="@+id/auth_explanation"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:gravity="center_horizontal"
-        android:text="@string/auth_explanation"
-        />
+        android:layout_gravity="center_vertical"
+        android:padding="50dp"
+        >
 
-    <EditText
-        android:id="@+id/auth_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="@string/email_address"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:singleLine="true"
-        />
+        <TextView
+            android:id="@+id/auth_explanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/auth_explanation"
+            />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"
-        />
+        <EditText
+            android:id="@+id/auth_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="@string/email_address"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"
+            />
 
-    <TextView
-        android:id="@+id/auth_confirmation_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/auth_confirmation_message"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone"
-        />
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            />
 
-    <EditText
-        android:id="@+id/auth_confirmation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/confirmation_code"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone"
-        android:singleLine="true"
-        android:inputType="number"
-        />
+        <TextView
+            android:id="@+id/auth_confirmation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/auth_confirmation_message"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            />
 
-    <Button
-        android:id="@+id/log_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/start_playing"
-        />
+        <EditText
+            android:id="@+id/auth_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/confirmation_code"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:inputType="number"
+            />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/log_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/start_playing"
+            />
+
+    </LinearLayout>
+</ScrollView>
