@@ -10,7 +10,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <service android:name=".WebSocketService" />
+        <service
+            android:name=".WebSocketService" />
 
         <activity
             android:name=".HomeActivity"
@@ -34,7 +35,6 @@
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

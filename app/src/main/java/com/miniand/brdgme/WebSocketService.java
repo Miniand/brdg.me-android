@@ -13,6 +13,8 @@ import com.koushikdutta.async.http.WebSocket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -21,9 +23,26 @@ import java.util.concurrent.CountDownLatch;
 public class WebSocketService extends IntentService
         implements CompletedCallback,
         AsyncHttpClient.WebSocketConnectCallback, WebSocket.StringCallback {
-    final CountDownLatch latch = new CountDownLatch(1);
+    public static final Intent INTENT = new Intent(
+            Brdgme.getGlobalApplicationContext(),
+            WebSocketService.class
+    );
+
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     private WebSocket webSocket;
+    private Timer restartTimer;
+
+    public static void stop() {
+        Log.v("WebSocket", "stop");
+        Brdgme.getGlobalApplicationContext().stopService(INTENT);
+    }
+
+    public static void start() {
+        Log.v("WebSocket", "start");
+        stop();
+        Brdgme.getGlobalApplicationContext().startService(INTENT);
+    }
 
     public WebSocketService() {
         this("WebSocketService");
@@ -39,6 +58,7 @@ public class WebSocketService extends IntentService
 
     @Override
     protected synchronized void onHandleIntent(Intent intent) {
+        Log.v("WebSocket", "onHandleIntent");
         String token = Brdgme.getAuthToken();
         if (token.isEmpty()) {
             return;
@@ -49,16 +69,42 @@ public class WebSocketService extends IntentService
         } catch (InterruptedException ignored) {}
     }
 
-    @Override
-    public void onCompleted(Exception ex) {
-        if (ex != null) {
-            ex.printStackTrace();
-            latch.countDown();
+    private void cancelRestart() {
+        Log.v("WebSocket", "cancelRestart");
+        if (restartTimer != null) {
+            restartTimer.cancel();
+            restartTimer = null;
         }
     }
 
+    public void restartLater() {
+        Log.v("WebSocket", "restartLater");
+        cancelRestart();
+        restartTimer = new Timer();
+        restartTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                start();
+            }
+        }, 60*1000);
+    }
+
+    // Closed callback.
+    @Override
+    public void onCompleted(Exception ex) {
+        Log.v("WebSocket", "onCompleted for closed");
+        if (ex != null) {
+            Log.v("WebSocket", "onCompleted error");
+            ex.printStackTrace();
+        }
+        restartLater();
+        latch.countDown();
+    }
+
+    // Connect callback.
     @Override
     public void onCompleted(Exception ex, WebSocket webSocket) {
+        Log.v("WebSocket", "onCompleted for connection");
         this.webSocket = webSocket;
         String token = Brdgme.getAuthToken();
         if (token.isEmpty()) {
@@ -68,10 +114,11 @@ public class WebSocketService extends IntentService
         if (ex != null) {
             ex.printStackTrace();
             latch.countDown();
+            restartLater();
             return;
         }
+        Log.v("WebSocket", "connected, authenticating");
         webSocket.setClosedCallback(this);
-        webSocket.setEndCallback(this);
         webSocket.setStringCallback(this);
         webSocket.send(String.format("\"%s\"", token));
     }
@@ -96,11 +143,13 @@ public class WebSocketService extends IntentService
     }
 
     @Override
-    public boolean stopService(Intent name) {
+    public void onDestroy() {
+        Log.v("WebSocket", "onDestroy");
         if (webSocket != null && webSocket.isOpen()) {
             webSocket.close();
+            cancelRestart();
         }
         webSocket = null;
-        return super.stopService(name);
+        super.onDestroy();
     }
 }

@@ -51,6 +51,14 @@ public class HomeActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void startWebSocket(View view) {
+        WebSocketService.start();
+    }
+
+    public void stopWebSocket(View view) {
+        WebSocketService.stop();
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
