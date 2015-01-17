@@ -37,6 +37,10 @@ public class WebSocketService extends IntentService
 
     @Override
     protected synchronized void onHandleIntent(Intent intent) {
+        String token = Brdgme.getAuthToken();
+        if (token.isEmpty()) {
+            return;
+        }
         AsyncHttpClient.getDefaultInstance().websocket("ws://api.beta.brdg.me/ws", "ws", this);
         try {
             latch.await();
@@ -53,6 +57,11 @@ public class WebSocketService extends IntentService
 
     @Override
     public void onCompleted(Exception ex, WebSocket webSocket) {
+        String token = Brdgme.getAuthToken();
+        if (token.isEmpty()) {
+            latch.countDown();
+            return;
+        }
         if (ex != null) {
             ex.printStackTrace();
             latch.countDown();
@@ -61,7 +70,7 @@ public class WebSocketService extends IntentService
         webSocket.setClosedCallback(this);
         webSocket.setEndCallback(this);
         webSocket.setStringCallback(this);
-        webSocket.send("\"ZTVeMZfIJYZtWmjjBxYkxndDfPxvBBCb\"");
+        webSocket.send(String.format("\"%s\"", token));
     }
 
     @Override
