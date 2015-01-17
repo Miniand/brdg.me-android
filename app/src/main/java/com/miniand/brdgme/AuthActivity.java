@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 
 
 public class AuthActivity extends ActionBarActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +88,10 @@ public class AuthActivity extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class AuthFragment extends Fragment {
+        public static final String STATE_STATE = "state";
+        public static final String STATE_EMAIL = "email";
+        public static final String STATE_CONFIRMATION = "confirmation";
+
         public enum State {
             ENTER_EMAIL, ENTER_CONFIRMATION, PROGRESS
         }
@@ -98,6 +101,21 @@ public class AuthActivity extends ActionBarActivity {
         private AuthFinishedHandler authFinishedHandler;
 
         public AuthFragment() {
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            View view = getView();
+            if (view == null) {
+                return;
+            }
+            EditText emailView = (EditText) view.findViewById(R.id.auth_email);
+            EditText confirmationView = (EditText) view.findViewById(R.id.auth_confirmation);
+
+            outState.putInt(STATE_STATE, state.ordinal());
+            outState.putString(STATE_EMAIL, emailView.getText().toString());
+            outState.putString(STATE_CONFIRMATION, confirmationView.getText().toString());
+            super.onSaveInstanceState(outState);
         }
 
         @Override
@@ -121,6 +139,15 @@ public class AuthActivity extends ActionBarActivity {
                     }
                 }
             });
+
+            if (savedInstanceState != null) {
+                EditText confirmationView = (EditText) rootView.findViewById(R.id.auth_confirmation);
+
+                state = State.values()[savedInstanceState.getInt(STATE_STATE)];
+                authEmail.setText(savedInstanceState.getString(STATE_EMAIL));
+                confirmationView.setText(savedInstanceState.getString(STATE_CONFIRMATION));
+                updateFromState(rootView);
+            }
 
             return rootView;
         }
@@ -165,6 +192,10 @@ public class AuthActivity extends ActionBarActivity {
             if (rootView == null) {
                 return;
             }
+            updateFromState(rootView);
+        }
+
+        private void updateFromState(View rootView) {
             switch (state) {
                 case ENTER_EMAIL:
                     rootView.findViewById(R.id.auth_explanation).setEnabled(true);
