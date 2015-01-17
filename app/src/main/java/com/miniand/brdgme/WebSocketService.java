@@ -23,6 +23,8 @@ public class WebSocketService extends IntentService
         AsyncHttpClient.WebSocketConnectCallback, WebSocket.StringCallback {
     final CountDownLatch latch = new CountDownLatch(1);
 
+    private WebSocket webSocket;
+
     public WebSocketService() {
         this("WebSocketService");
     }
@@ -57,6 +59,7 @@ public class WebSocketService extends IntentService
 
     @Override
     public void onCompleted(Exception ex, WebSocket webSocket) {
+        this.webSocket = webSocket;
         String token = Brdgme.getAuthToken();
         if (token.isEmpty()) {
             latch.countDown();
@@ -90,5 +93,14 @@ public class WebSocketService extends IntentService
         } catch (JSONException e) {
             Log.w("WebSocket", "Non-JSON message: " + s);
         }
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        if (webSocket != null && webSocket.isOpen()) {
+            webSocket.close();
+        }
+        webSocket = null;
+        return super.stopService(name);
     }
 }
