@@ -54,6 +54,7 @@ public class WebSocketService extends IntentService
      */
     public WebSocketService(String name) {
         super(name);
+        setIntentRedelivery(true);
     }
 
     @Override
@@ -62,6 +63,9 @@ public class WebSocketService extends IntentService
         String token = Brdgme.getAuthToken();
         if (token.isEmpty()) {
             return;
+        }
+        if (restartTimer != null) {
+            restartTimer.cancel();
         }
         AsyncHttpClient.getDefaultInstance().websocket("ws://api.beta.brdg.me/ws", "ws", this);
         try {
@@ -108,6 +112,7 @@ public class WebSocketService extends IntentService
         this.webSocket = webSocket;
         String token = Brdgme.getAuthToken();
         if (token.isEmpty()) {
+            // No auth
             latch.countDown();
             return;
         }
@@ -146,6 +151,7 @@ public class WebSocketService extends IntentService
     public void onDestroy() {
         Log.v("WebSocket", "onDestroy");
         if (webSocket != null && webSocket.isOpen()) {
+            // WebSocket is still open, so it was an intentional call to stop.  Cancel any restart.
             webSocket.close();
             cancelRestart();
         }
