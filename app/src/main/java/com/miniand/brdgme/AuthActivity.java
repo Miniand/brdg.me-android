@@ -113,18 +113,10 @@ public class AuthActivity extends ActionBarActivity {
             });
 
             EditText authEmail = (EditText) rootView.findViewById(R.id.auth_email);
-            authEmail.addTextChangedListener(new TextWatcher() {
+            authEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (state != State.ENTER_EMAIL) {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus && state != State.ENTER_EMAIL) {
                         goToState(State.ENTER_EMAIL);
                     }
                 }
