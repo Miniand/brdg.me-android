@@ -31,12 +31,18 @@ public class BoardGame {
     public String commands;
     public String log;
 
-    public static ArrayList<String> stringsFromJSONArray(JSONArray a) {
+    public static ArrayList<String> stringsFromJSONArray(JSONArray a) throws JSONException {
         ArrayList<String> al = new ArrayList<>();
         for (int i = 0; i < a.length(); i++) {
-            try {
-                al.add(a.getString(i));
-            } catch (JSONException ignore) {}
+            al.add(a.getString(i));
+        }
+        return al;
+    }
+
+    public static ArrayList<BoardGame> fromJSONArray(JSONArray a) throws JSONException {
+        ArrayList<BoardGame> al = new ArrayList<>();
+        for (int i = 0; i < a.length(); i++) {
+            al.add(fromJSONObject(a.getJSONObject(i)));
         }
         return al;
     }
