@@ -9,12 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class HomeActivity extends ActionBarActivity implements GameListFragment.OnGameClickListener {
+public class GameActivity extends ActionBarActivity implements GameListFragment.OnGameClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_game);
         if (savedInstanceState == null) {
             FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
             trans.add(R.id.container, new GameListFragment());
@@ -33,7 +33,7 @@ public class HomeActivity extends ActionBarActivity implements GameListFragment.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
 
@@ -67,7 +67,6 @@ public class HomeActivity extends ActionBarActivity implements GameListFragment.
             contentFrag.setArguments(args);
 
             FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-            trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             trans.replace(R.id.container, contentFrag);
             trans.addToBackStack(null);
             trans.commit();

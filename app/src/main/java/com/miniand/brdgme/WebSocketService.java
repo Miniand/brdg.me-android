@@ -67,7 +67,7 @@ public class WebSocketService extends IntentService
         if (restartTimer != null) {
             restartTimer.cancel();
         }
-        AsyncHttpClient.getDefaultInstance().websocket("wss://api.beta.brdg.me/ws", "ws", this);
+        AsyncHttpClient.getDefaultInstance().websocket("wss://api.brdg.me/ws", "ws", this);
         try {
             latch.await();
         } catch (InterruptedException ignored) {}

@@ -41,6 +41,8 @@
     font-style: oblique;
 }
 pre {
+    font-size: 13px;
+    line-height: 17px;
     font-family: "DejaVu Sans Mono";
 }
 </style>

@@ -2,7 +2,6 @@ package com.miniand.brdgme;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +38,7 @@ public class GameContentFragment extends Fragment {
         } else {
             id = getArguments().getString(ARG_ID);
         }
-        View rootView = inflater.inflate(R.layout.fragment_home_game_content, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_game_content, container, false);
         WebView webView = (WebView) rootView.findViewById(R.id.game_render);
         webView.getSettings().setBuiltInZoomControls(true);
         updateGame(rootView);
@@ -61,7 +60,7 @@ public class GameContentFragment extends Fragment {
     public void updateGame(View rootView) {
         CodeStringRequest request = new CodeStringRequest(
                 Request.Method.GET,
-                String.format("https://api.beta.brdg.me/game/%s", id),
+                String.format("https://api.brdg.me/game/%s", id),
                 new Response.Listener<CodeStringRequest.CodeString>() {
                     @Override
                     public void onResponse(CodeStringRequest.CodeString response) {
@@ -75,8 +74,8 @@ public class GameContentFragment extends Fragment {
                             WebView render = (WebView) getView().findViewById(R.id.game_render);
                             Log.v("game", boardGame.game);
                             render.loadDataWithBaseURL("file:///android_asset/", String.format(
-                                    getString(R.string.game_layout_html),
-                                    boardGame.game).replaceAll("\n", "<br />"),
+                                            getString(R.string.game_layout_html),
+                                            boardGame.game).replaceAll("\n", "<br />"),
                                     "text/html", "utf-8", null);
                         } catch (JSONException e) {
                             Toast.makeText(

@@ -76,7 +76,7 @@ public class AuthActivity extends ActionBarActivity {
     }
 
     private void goHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, GameActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -225,7 +225,7 @@ public class AuthActivity extends ActionBarActivity {
         private void requestAuth(final String email) {
             StringRequest request = new StringRequest(
                     Request.Method.POST,
-                    "https://api.beta.brdg.me/auth/request",
+                    "https://api.brdg.me/auth/request",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -272,7 +272,7 @@ public class AuthActivity extends ActionBarActivity {
         private void confirmAuth(final String email, final String confirmation) {
             StringRequest request = new StringRequest(
                     Request.Method.POST,
-                    "https://api.beta.brdg.me/auth/confirm",
+                    "https://api.brdg.me/auth/confirm",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

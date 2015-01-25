@@ -14,18 +14,18 @@
             android:name=".WebSocketService" />
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".GameActivity"
             android:label="@string/app_name" >
         </activity>
 
         <activity
             android:name=".SettingsActivity"
             android:label="Settings"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".GameActivity"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity" />
+                android:value=".GameActivity" />
         </activity>
 
         <activity

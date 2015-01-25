@@ -3,6 +3,7 @@ package com.miniand.brdgme;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class GameListFragment extends Fragment {
     private GameListAdapter currentTurnAdapter;
     private GameListAdapter recentlyFinishedAdapter;
+    private GameListAdapter otherActiveAdapter;
 
     public static interface OnGameClickListener {
         public void onGameClick(BoardGame boardGame);
@@ -38,7 +40,7 @@ public class GameListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home_game_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_game_list, container, false);
 
         final ListView currentTurnList = (ListView) rootView.findViewById(R.id.current_turn_list);
         currentTurnAdapter = new GameListAdapter(getActivity(), 0);
@@ -64,6 +66,18 @@ public class GameListFragment extends Fragment {
             }
         });
 
+        ListView otherActiveList = (ListView) rootView.findViewById(R.id.other_active_list);
+        otherActiveAdapter = new GameListAdapter(getActivity(), 0);
+        otherActiveList.setAdapter(otherActiveAdapter);
+        otherActiveList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (onGameClickListener != null) {
+                    onGameClickListener.onGameClick(otherActiveAdapter.getItem(position));
+                }
+            }
+        });
+
         update(rootView);
         return rootView;
     }
@@ -83,7 +97,7 @@ public class GameListFragment extends Fragment {
     public void update(final View rootView) {
         CodeStringRequest request = new CodeStringRequest(
                 Request.Method.GET,
-                "https://api.beta.brdg.me/game/summary",
+                "https://api.brdg.me/game/summary",
                 new Response.Listener<CodeStringRequest.CodeString>() {
                     @Override
                     public void onResponse(CodeStringRequest.CodeString response) {
@@ -103,6 +117,12 @@ public class GameListFragment extends Fragment {
                             );
                             recentlyFinishedAdapter.clear();
                             recentlyFinishedAdapter.addAll(recentlyFinished);
+                            ArrayList<BoardGame> otherActive = BoardGame.fromJSONArray(
+                                    json.getJSONArray("otherActive")
+                            );
+                            otherActiveAdapter.clear();
+                            otherActiveAdapter.addAll(otherActive);
+                            Log.v("otherActive", String.valueOf(otherActiveAdapter.getCount()));
                         } catch (JSONException e) {
                             Toast.makeText(
                                     getActivity(),
