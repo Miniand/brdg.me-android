@@ -12,5 +12,40 @@
     <string name="auth_explanation">Log in only using your email, no account or password required.</string>
     <string name="auth_confirmation_message">A code has been emailed to you, please enter the code below</string>
     <string name="action_new_game">New game</string>
-
+    <string name="game_layout_html"><![CDATA[
+<html>
+<head>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVu Sans Mono";
+    src: url("fonts/DejaVuSansMono.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DejaVu Sans Mono";
+    src: url("fonts/DejaVuSansMono-Bold.ttf");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "DejaVu Sans Mono";
+    src: url("fonts/DejaVuSansMono-Oblique.ttf");
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {
+    font-family: "DejaVu Sans Mono";
+    src: url("fonts/DejaVuSansMono-BoldOblique.ttf");
+    font-weight: bold;
+    font-style: oblique;
+}
+pre {
+    font-family: "DejaVu Sans Mono";
+}
+</style>
+</head>
+<body><pre>%s</pre></body>
+</html>
+    ]]></string>
 </resources>

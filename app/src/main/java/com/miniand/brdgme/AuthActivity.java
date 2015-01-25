@@ -225,7 +225,7 @@ public class AuthActivity extends ActionBarActivity {
         private void requestAuth(final String email) {
             StringRequest request = new StringRequest(
                     Request.Method.POST,
-                    "http://api.beta.brdg.me/auth/request",
+                    "https://api.beta.brdg.me/auth/request",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -272,7 +272,7 @@ public class AuthActivity extends ActionBarActivity {
         private void confirmAuth(final String email, final String confirmation) {
             StringRequest request = new StringRequest(
                     Request.Method.POST,
-                    "http://api.beta.brdg.me/auth/confirm",
+                    "https://api.beta.brdg.me/auth/confirm",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
